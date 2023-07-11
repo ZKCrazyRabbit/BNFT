@@ -29,6 +29,8 @@ contract ImageNFT is ERC721URIStorage {
 
     mapping(uint256 => Image) private _images;
 
+    event Mint(address indexed from, uint256 value);
+
     function mint(uint256 imageId) external payable returns (uint256) {
         require(imageId > 0 && imageId <= 4, "Invalid image id");
         Image memory image = _images[imageId];
@@ -37,6 +39,9 @@ contract ImageNFT is ERC721URIStorage {
         uint256 newImageId = _tokenIds.current();
         _mint(msg.sender, newImageId);
         _setTokenURI(newImageId, image.ipfsHash);
+
+        // 调用事件，记录交易人和转账金额
+        emit Mint(msg.sender, msg.value);
 
         return newImageId;
     }
