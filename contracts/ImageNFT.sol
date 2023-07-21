@@ -8,6 +8,7 @@ contract ImageNFT is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
+    // TODO: 使用外部函数维护
     constructor() ERC721("Crazy Rabbit", "IMGNFT") {
         _images[1] = Image(
             "https://bafybeidvjunwyuncwhfhd4ehkv7fggdg7ncglxizgflhtdgax2kftdzw5a.ipfs.w3s.link/nft_1.json"
@@ -27,11 +28,20 @@ contract ImageNFT is ERC721URIStorage {
         string ipfsHash;
     }
 
+    // TODO: 增加upsert、list、delete方法
     mapping(uint256 => Image) private _images;
 
+    // 手续费价格
+    uint256 private _gasPrice;
+
+    // 白名单用户
+    // TODO: 增加list、upsert、delete方法
+    mapping(address => uint) private _whitelist;
+
+    // mint事件通知
     event Mint(address indexed from, uint256 value);
 
-    function mint(uint256 imageId) external payable returns (uint256) {
+    function mint(uint256 imageId) public payable returns (uint256) {
         require(imageId > 0 && imageId <= 4, "Invalid image id");
         Image memory image = _images[imageId];
 
@@ -46,9 +56,22 @@ contract ImageNFT is ERC721URIStorage {
         return newImageId;
     }
 
-    function getImage(uint256 imageId) external view returns (Image memory) {
+    function getImageById(uint256 imageId) public view returns (Image memory) {
         require(imageId > 0 && imageId <= 4, "Invalid image id");
         Image memory image = _images[imageId];
         return image;
+    }
+
+    function getGasPrice() public view returns (uint256) {
+        // 判断是否为白名单用户
+        if (_whitelist[msg.sender] == 1) {
+            return 0;
+        }
+        return _gasPrice;
+    }
+
+    // 获取gas price的原始内容
+    function getOriginGasPrice() public view returns (uint256) {
+        return _gasPrice;
     }
 }
