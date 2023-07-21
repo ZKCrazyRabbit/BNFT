@@ -1,14 +1,15 @@
 require("@nomicfoundation/hardhat-toolbox");
+require("@nomiclabs/hardhat-truffle5");
 require("dotenv").config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  defaultNetwork: "mantle-testnet",
   solidity: "0.8.18",
-  networks: {
-    "mantle-testnet": {
-      url: "https://rpc.testnet.mantle.xyz/",
-      accounts: [process.env.PRIV_KEY],
-    }
-  }
+  // defaultNetwork: "mantle-testnet",
+  // networks: {
+  //   "mantle-testnet": {
+  //     url: "https://rpc.testnet.mantle.xyz/",
+  //     accounts: [process.env.PRIV_KEY],
+  //   }
+  // }
 };
