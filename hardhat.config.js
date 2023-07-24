@@ -9,6 +9,10 @@ module.exports = {
   networks: {
     "mantle-testnet": {
       url: "https://rpc.testnet.mantle.xyz/",
+      accounts: [process.env.TEST_PRIV_KEY],
+    },
+    "mantle-mainnet": {
+      url: "https://rpc.mantle.xyz/",
       accounts: [process.env.PRIV_KEY],
     }
   }

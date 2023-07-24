@@ -10,4 +10,5 @@ cache
 artifacts
 
 deploy.sh
+deploy_test.sh
 

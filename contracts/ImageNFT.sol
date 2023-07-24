@@ -38,7 +38,6 @@ contract ImageNFT is ERC721URIStorage {
 
         _tokenIds.increment();
         uint256 newImageId = _tokenIds.current();
-        // TODO: 白名单用户金额设置为0
         _mint(msg.sender, newImageId);
         _setTokenURI(newImageId, image.ipfsHash);
 
