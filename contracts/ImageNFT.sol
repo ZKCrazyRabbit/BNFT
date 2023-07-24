@@ -8,7 +8,8 @@ contract ImageNFT is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    constructor() ERC721("Crazy Rabbit", "IMGNFT") {}
+    // 管理员地址
+    address private adminer = 0xbC7420a462aF2e57a47fB3755D0e52c6031dB93D;
 
     struct Image {
         uint256 id;
@@ -26,7 +27,9 @@ contract ImageNFT is ERC721URIStorage {
     address[] private _whitelist_arr;
 
     // mint事件通知
-    event Mint(address indexed from, uint256 value);
+    event Mint(address from, uint256 value);
+
+    constructor() ERC721("Crazy Rabbit", "IMGNFT") {}
 
     function mint(uint256 imageId) public payable returns (uint256) {
         require(imageId > 0, "Invalid image id");
@@ -35,6 +38,7 @@ contract ImageNFT is ERC721URIStorage {
 
         _tokenIds.increment();
         uint256 newImageId = _tokenIds.current();
+        // TODO: 白名单用户金额设置为0
         _mint(msg.sender, newImageId);
         _setTokenURI(newImageId, image.ipfsHash);
 
@@ -44,11 +48,17 @@ contract ImageNFT is ERC721URIStorage {
         return newImageId;
     }
 
-    function listImage() public view returns (Image[] memory) {
-        return _image_list;
+    function listImage() public view returns (uint256[] memory) {
+        uint256[] memory ids = new uint256[](_image_list.length);
+        for (uint i = 0; i < _image_list.length; i++) {
+            ids[i] = _image_list[i].id;
+        }
+        return ids;
     }
 
-    function upsertImage(uint256 id, string calldata ipfshash) public {
+    function upsertImage(uint256 id, string memory ipfshash) public {
+        require(msg.sender == adminer, "auth failed");
+
         Image memory image = _images[id];
         Image memory newImage = Image(id, ipfshash);
         if (isStringNotEmpty(image.ipfsHash)) {
@@ -62,6 +72,8 @@ contract ImageNFT is ERC721URIStorage {
     }
 
     function removeImage(uint256 id) public {
+        require(msg.sender == adminer, "auth failed");
+
         delete _images[id];
         int256 i = findImageIndex(id);
         if (i >= 0) {
@@ -69,7 +81,7 @@ contract ImageNFT is ERC721URIStorage {
         }
     }
 
-    function findImageIndex(uint256 id) private view returns (int256) {
+    function findImageIndex(uint256 id) internal view returns (int256) {
         for (uint i = 0; i < _image_list.length; i++) {
             if (_image_list[i].id == id) {
                 return int256(i);
@@ -78,14 +90,24 @@ contract ImageNFT is ERC721URIStorage {
         return -1;
     }
 
-    function removeImageByIndex(uint i) private {
+    function removeImageByIndex(uint i) internal {
         _image_list[i] = _image_list[_image_list.length - 1];
         _image_list.pop();
     }
 
-    function getImageById(uint256 imageId) public view returns (Image memory) {
+    function getImageById(
+        uint256 imageId
+    ) internal view returns (Image memory) {
         Image memory image = _images[imageId];
         return image;
+    }
+
+    // 外部使用
+    function getImageInfoById(
+        uint256 imageId
+    ) public view returns (uint256, string memory) {
+        Image memory image = _images[imageId];
+        return (image.id, image.ipfsHash);
     }
 
     function getGasPrice() public view returns (uint256) {
@@ -100,6 +122,8 @@ contract ImageNFT is ERC721URIStorage {
     }
 
     function updateGasPrice(uint256 price) public {
+        require(msg.sender == adminer, "auth failed");
+
         _gasPrice = price;
     }
 
@@ -108,6 +132,8 @@ contract ImageNFT is ERC721URIStorage {
     }
 
     function updateWhiteList(address[] calldata whitelist) public {
+        require(msg.sender == adminer, "auth failed");
+
         for (uint i = 0; i < _whitelist_arr.length; i++) {
             delete _whitelist[_whitelist_arr[i]];
         }
@@ -117,7 +143,7 @@ contract ImageNFT is ERC721URIStorage {
         }
     }
 
-    function isStringNotEmpty(string memory str) private pure returns (bool) {
+    function isStringNotEmpty(string memory str) internal pure returns (bool) {
         bytes memory strBytes = bytes(str);
         if (strBytes.length == 0) {
             return false;

@@ -5,11 +5,11 @@ require("dotenv").config();
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: "0.8.18",
-  // defaultNetwork: "mantle-testnet",
-  // networks: {
-  //   "mantle-testnet": {
-  //     url: "https://rpc.testnet.mantle.xyz/",
-  //     accounts: [process.env.PRIV_KEY],
-  //   }
-  // }
+  defaultNetwork: "mantle-testnet",
+  networks: {
+    "mantle-testnet": {
+      url: "https://rpc.testnet.mantle.xyz/",
+      accounts: [process.env.PRIV_KEY],
+    }
+  }
 };
