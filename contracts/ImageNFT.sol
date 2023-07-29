@@ -31,7 +31,9 @@ contract ImageNFT is ERC721URIStorage {
     // mint事件通知
     event Mint(address from, uint256 value);
 
-    constructor() ERC721("Crazy Rabbit", "IMGNFT") {}
+    constructor() ERC721("Crazy Rabbit", "IMGNFT") {
+        _mint_value = 1;
+    }
 
     function mint(uint256 imageId) public payable returns (uint256) {
         require(imageId > 0, "Invalid image id");
