@@ -3,12 +3,20 @@ const { artifacts, contract, assert } = require("hardhat");
 const ImageNFT = artifacts.require("ImageNFT");
 
 contract("ImageNFT", accounts => {
-    // it("gasPrice", async function () {
-    //     const imageNFT = await ImageNFT.new();
-    //     const gasPrice = 10000;
-    //     await imageNFT.updateGasPrice(gasPrice);
-    //     assert.equal(await imageNFT.getOriginGasPrice(), gasPrice);
-    // });
+    it("gasPrice", async function () {
+        const imageNFT = await ImageNFT.new();
+        const gasPrice = 10000;
+        await imageNFT.updateGasPrice(gasPrice);
+        assert.equal(await imageNFT.getOriginGasPrice(), gasPrice);
+    });
+
+    it("mintValue", async function () {
+        const imageNFT = await ImageNFT.new();
+        const mintValue = '0.02';
+        await imageNFT.updateMintValue(mintValue);
+        assert.equal(await imageNFT.getOriginMintValue(), mintValue);
+        assert.equal(await imageNFT.getMintValue(), '0.02');
+    });
 
     it("image", async function () {
         const imageNFT = await ImageNFT.new();
@@ -40,12 +48,12 @@ contract("ImageNFT", accounts => {
         assert.equal(afterRemoveImagesIds.length, 1);
     });
 
-    // it("whitelist", async function () {
-    //     const imageNFT = await ImageNFT.new();
-    //     const myAddress = '0xbC7420a462aF2e57a47fB3755D0e52c6031dB93D';
-    //     await imageNFT.updateWhiteList([myAddress]);
-    //     const whitelist = await imageNFT.listWhiteList();
-    //     console.log('whitelist: ', whitelist);
-    //     assert.equal(whitelist.length, 1);
-    // });
+    it("whitelist", async function () {
+        const imageNFT = await ImageNFT.new();
+        const myAddress = '0xbC7420a462aF2e57a47fB3755D0e52c6031dB93D';
+        await imageNFT.updateWhiteList([myAddress]);
+        const whitelist = await imageNFT.listWhiteList();
+        console.log('whitelist: ', whitelist);
+        assert.equal(whitelist.length, 1);
+    });
 });
