@@ -21,8 +21,8 @@ contract ImageNFT is ERC721URIStorage {
 
     // 手续费价格(单位:wei)
     uint256 private _gasPrice;
-    // 价格(单位:ether)
-    string private _mint_value;
+    // 价格(单位:ether,精确到分)
+    uint256 private _mint_value;
 
     // 白名单用户
     mapping(address => bool) private _whitelist;
@@ -128,18 +128,18 @@ contract ImageNFT is ERC721URIStorage {
         _gasPrice = price;
     }
 
-    function getMintValue() public view returns (string memory) {
+    function getMintValue() public view returns (uint256) {
         if (_whitelist[msg.sender] == true) {
-            return "0.01"; // 白名单用户固定价格为0.01
+            return 1; // 白名单用户固定价格为0.01
         }
         return _mint_value;
     }
 
-    function getOriginMintValue() public view returns (string memory) {
+    function getOriginMintValue() public view returns (uint256) {
         return _mint_value;
     }
 
-    function updateMintValue(string memory value) public {
+    function updateMintValue(uint256 value) public {
         require(msg.sender == adminer, "auth failed");
 
         _mint_value = value;

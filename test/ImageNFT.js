@@ -12,10 +12,10 @@ contract("ImageNFT", accounts => {
 
     it("mintValue", async function () {
         const imageNFT = await ImageNFT.new();
-        const mintValue = '0.02';
+        const mintValue = 2;
         await imageNFT.updateMintValue(mintValue);
         assert.equal(await imageNFT.getOriginMintValue(), mintValue);
-        assert.equal(await imageNFT.getMintValue(), '0.02');
+        assert.equal(await imageNFT.getMintValue(), 1);
     });
 
     it("image", async function () {
